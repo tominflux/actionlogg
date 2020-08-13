@@ -29,5 +29,10 @@
   "bugs": {
     "url": "https://github.com/tominflux/actionlogg/issues"
   },
-  "homepage": "https://github.com/tominflux/actionlogg#readme"
+  "homepage": "https://github.com/tominflux/actionlogg#readme",
+  "dependencies": {
+    "@x-logg/util": "^0.1.1",
+    "aarketype": "^0.1.6",
+    "ffield": "^0.2.5"
+  }
 }
