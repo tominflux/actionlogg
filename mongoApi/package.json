@@ -1,0 +1,19 @@
+{
+  "name": "@x-logg/actionlogg-mongo",
+  "version": "0.1.0",
+  "description": "",
+  "main": "lib/api/index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tominflux/actionlogg.git"
+  },
+  "author": "Tom Chesters",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/tominflux/actionlogg/issues"
+  },
+  "homepage": "https://github.com/tominflux/actionlogg#readme"
+}
