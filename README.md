@@ -1,2 +1,2 @@
 # actionlogg
-Back-end framewor
+Back-end framework for logging platform activity.
