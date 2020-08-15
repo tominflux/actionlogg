@@ -1,4 +1,10 @@
-const { mongoConnect } = require("@x-logg/mongoops")
+const { 
+    connect,
+    findInCollection,
+    insertIntoCollection,
+    deleteFromCollection
+} = require("@x-logg/mongoops")
+const { getArchetypeCollectionName } = require("../../util/misc")
 
 
 //////////////
@@ -8,26 +14,30 @@ const { mongoConnect } = require("@x-logg/mongoops")
 
 
 const createArchetype = async (
-    options, catalogueIdentifier, archetype
+    options, actionlogIdentifier, lockedArchetype
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
-    await insertIntoArchetypesCollection(
-        database, catalogueIdentifier, archetype
+    await insertIntoCollection(
+        database, 
+        getArchetypeCollectionName(actionlogIdentifier), 
+        [ lockedArchetype ]
     )
     //
     connection.close()
 }
 
 const readArchetypes = async (
-    options, catalogueIdentifier
+    options, actionlogIdentifier
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
-    const archetypes = await getAllFromArchetypesCollection(
-        database, catalogueIdentifier
+    const archetypes = await findInCollection(
+        database, 
+        getArchetypeCollectionName(actionlogIdentifier),
+        {}
     )
     //
     connection.close()
@@ -36,28 +46,34 @@ const readArchetypes = async (
 }
 
 const readArchetype = async (
-    options, catalogueIdentifier, archetypeIdentifier
+    options, actionlogIdentifier, archetypeIdentifier
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
-    const archetype = findInArchetypesCollection(
-        database, catalogueIdentifier, archetypeIdentifier
+    const archetypes = await findInCollection(
+        database, 
+        getArchetypeCollectionName(actionlogIdentifier), 
+        { identifier: archetypeIdentifier }
     )
     //
     connection.close()
     //
-    return archetype
+    return (
+        archetypes.length > 0 
+    ) ? archetypes[0] : null
 }
 
 const deleteArchetype = async (
-    options, catalogueIdentifier, archetypeIdentifier
+    options, actionlogIdentifier, archetypeIdentifier
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
-    deleteFromArchetypesCollection(
-        database, catalogueIdentifier, archetypeIdentifier
+    deleteFromCollection(
+        database, 
+        getArchetypeCollectionName(actionlogIdentifier),
+        { identifier: archetypeIdentifier }
     )
     //
     connection.close()

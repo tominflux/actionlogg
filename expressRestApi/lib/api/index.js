@@ -5,7 +5,7 @@ const { serveArchetypeApi } = require("./archetype")
 const { serveRecordApi } = require("./record")
 
 const genActionloggExpressRestApi = (actionloggApi) => {
-    const router = express.router()
+    const router = express.Router()
     router.use(bodyParser.json())
     //Insert actionlogg API into router requests.
     router.use((req, res, next) => {

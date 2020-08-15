@@ -1,11 +1,11 @@
 const { 
-    mongoConnect,
+    connect,
     insertIntoCollection,
     findInCollection,
     updateInCollection,
     deleteFromCollection
 } = require("@x-logg/mongoops")
-const { getRecordCollectionName } = require("../../misc")
+const { getRecordCollectionName } = require("../../util/misc")
 
 
 ////////////
@@ -18,7 +18,7 @@ const createRecord = async (
     lockedRecord
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
     await insertIntoCollection(
         database,
@@ -36,7 +36,7 @@ const readRecords = async (
     propertyFilter=null
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
     const qArchetypeId = (
         archetypeId === null
@@ -66,7 +66,7 @@ const readRecord = async (
     identifier
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
     const lockedRecords = await findInCollection(
         database,
@@ -87,7 +87,7 @@ const updateRecord = async (
     lockedRecord
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
     const identifier = lockedRecord.identifier
     const newProperties = lockedRecord.properties
@@ -108,7 +108,7 @@ const deleteRecord = async (
     identifier
 ) => {
     //
-    const { connection, database } = await mongoConnect(options)
+    const { connection, database } = await connect(options)
     //
     await deleteFromCollection(
         database,
