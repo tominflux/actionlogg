@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tominflux/actionlogg/issues"
   },
-  "homepage": "https://github.com/tominflux/actionlogg#readme"
+  "homepage": "https://github.com/tominflux/actionlogg#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
