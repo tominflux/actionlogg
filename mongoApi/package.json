@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/tominflux/actionlogg/issues"
   },
-  "homepage": "https://github.com/tominflux/actionlogg#readme"
+  "homepage": "https://github.com/tominflux/actionlogg#readme",
+  "dependencies": {
+    "@x-logg/mongoops": "^0.1.2"
+  }
 }
