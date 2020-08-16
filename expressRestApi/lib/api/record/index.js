@@ -25,7 +25,7 @@ const getRecords = async (req, res, next) => {
     const actionlogId = req.params.actId
     //
     const archetypeId = req.query.arcId
-    const propertyFilter = req.query.props
+    const propertyFilter = req.body.propertyFilter
     //
     const records = await req.actionlogg.readRecords(
         actionlogId,
