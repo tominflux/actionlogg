@@ -1,7 +1,7 @@
 
 
 
-const postActionlog = async (req, res, next) => {
+const postActionlog = async (req, res) => {
     //
     const identifier = req.params.actId
     //
@@ -10,24 +10,14 @@ const postActionlog = async (req, res, next) => {
     res.send()
 }
 
-const getActionlogs = async (req, res, next) => {
+const getActionlogs = async (req, res) => {
     //
     const actionlogNames = await req.actionlogg.readActionlogNames()
     //
     res.json(actionlogNames)
 }
 
-const putActionlog = async (req, res, next) => {
-    //
-    const identifier = req.params.actId
-    const newIdentifier = req.body.newIdentifier
-    //
-    await req.actionlogg.updateActionlog(identifier, newIdentifier)
-    //
-    res.send()
-}
-
-const deleteActionlog = async (req, res, next) => {
+const deleteActionlog = async (req, res) => {
     //
     const identifier = req.params.actId
     //
@@ -44,7 +34,6 @@ const deleteActionlog = async (req, res, next) => {
 const serveActionlogApi = (router) => {
     router.post("/actionlog/:actId", postActionlog)
     router.get("/actionlogs", getActionlogs)
-    router.put("/actionlog/:actId", putActionlog)
     router.delete("/actionlog/:actId", deleteActionlog)
 }
 
