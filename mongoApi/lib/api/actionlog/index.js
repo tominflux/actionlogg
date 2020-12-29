@@ -1,13 +1,10 @@
-const { 
-    connect, 
-    createMongoCollection, 
-    deleteMongoCollection 
+const {
+    connect,
+    insertIntoCollection,
+    findInCollection,
+    deleteFromCollection,
 } = require("@x-logg/mongoops")
-const { 
-    getArchetypeCollectionName, 
-    getRecordCollectionName 
-} = require("../../util/misc")
-const { getActionlogNames } = require("../../util/actionlog")
+const COLLECTION_NAMES = require("../../enums/collectionNames")
 
 
 //////////////
@@ -20,29 +17,35 @@ const createActionlog = async (
     //
     const { connection, database } = await connect(options)
     //
-    await createMongoCollection(
+    const entry = { identifier }
+    await insertIntoCollection(
         database,
-        getArchetypeCollectionName(identifier)
-    )
-    await createMongoCollection(
-        database,
-        getRecordCollectionName(identifier)
+        COLLECTION_NAMES.ACTIONLOG,
+        [entry]
     )
     //
     connection.close()
 }
 
-const readActionlogNames = async (
+const readActionlogs = async (
     options
 ) => {
     //
     const { connection, database } = await connect(options)
     //
-    const actionlogNames = await getActionlogNames(database)
+    const entries = await findInCollection(
+        database,
+        COLLECTION_NAMES.CATALOGUE,
+        {}
+    )
+    //
+    const actionlogs = entries.map(
+        record => record.identifier
+    )
     //
     connection.close()
     //
-    return actionlogNames
+    return actionlogs
 }
 
 const deleteActionlog = async (
@@ -50,14 +53,11 @@ const deleteActionlog = async (
 ) => {
     //
     const { connection, database } = await connect(options)
-    //
-    await deleteMongoCollection(
+    // Remove actionlog entry from actionlogs collection.
+    await deleteFromCollection(
         database,
-        getArchetypeCollectionName(identifier)
-    )
-    await deleteMongoCollection(
-        database,
-        getRecordCollectionName(identifier)
+        COLLECTION_NAMES.ACTIONLOG,
+        { identifier }
     )
     //
     connection.close()
@@ -69,5 +69,5 @@ const deleteActionlog = async (
 
 
 exports.createActionlog = createActionlog
-exports.readActionlogNames = readActionlogNames
+exports.readActionlogs = readActionlogs
 exports.deleteActionlog = deleteActionlog

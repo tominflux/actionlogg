@@ -1,11 +1,11 @@
-const { 
+const {
     connect,
     insertIntoCollection,
     findInCollection,
     updateInCollection,
     deleteFromCollection
 } = require("@x-logg/mongoops")
-const { getRecordCollectionName } = require("../../util/misc")
+const COLLECTION_NAMES = require("../../enums/collectionNames")
 
 
 ////////////
@@ -20,10 +20,15 @@ const createRecord = async (
     //
     const { connection, database } = await connect(options)
     //
+    const entry = {
+        actionlogId,
+        ...lockedRecord
+    }
+    //
     await insertIntoCollection(
         database,
-        getRecordCollectionName(actionlogId),
-        [ lockedRecord ]
+        COLLECTION_NAMES.RECORD,
+        [entry]
     )
     //
     connection.close()
@@ -32,30 +37,45 @@ const createRecord = async (
 const readRecords = async (
     options,
     actionlogId,
-    archetypeId=null,
-    propertyFilter=null
+    archetypeId = null,
+    propertyFilter = null
 ) => {
     //
     const { connection, database } = await connect(options)
-    //
-    const qArchetypeId = (
-        archetypeId === null
-    ) ? {} : { archetypeId }
-    const qPropertyFilter = (
-        propertyFilter === null
-    ) ? {} : { properties: propertyFilter }
-    const query = {
-        ...qArchetypeId,
-        ...qPropertyFilter
+    //Start building query
+    let query = { actionlogId }
+    //Add archetype ID if given
+    if (archetypeId) {
+        query = {
+            archetypeId,
+            ...query
+        }
+    }
+    //Add all fields in property filter.
+    for (const key in propertyFilter) {
+        const queryKey = `properties.${key}`
+        const queryValue = propertyFilter[key]
+        query = {
+            [queryKey]: queryValue,
+            ...query
+        }
     }
     //
-    const lockedRecords = await findInCollection(
+    const entries = await findInCollection(
         database,
-        getRecordCollectionName(actionlogId),
+        COLLECTION_NAMES.RECORD,
         query
     )
     //
     connection.close()
+    //
+    const lockedRecords = entries.map(entry => {
+        const {
+            actionlogId,
+            ...lockedRecord
+        } = entry
+        return lockedRecord
+    })
     //
     return lockedRecords
 }
@@ -63,22 +83,40 @@ const readRecords = async (
 const readRecord = async (
     options,
     actionlogId,
-    identifier
+    recordId,
 ) => {
     //
     const { connection, database } = await connect(options)
     //
-    const lockedRecords = await findInCollection(
+    const identifier = recordId
+    //
+    const query = {
+        actionlogId,
+        identifier
+    }
+    //
+    const entries = await findInCollection(
         database,
-        getRecordCollectionName(actionlogId),
-        { identifier }
+        COLLECTION_NAMES.RECORD,
+        query
     )
     //
     connection.close()
     //
-    return (
-        lockedRecords.length > 0
-    ) ? lockedRecords[0] : null
+    if (entries.length === 0) {
+        return null
+    }
+    //
+    const getLockedRecord = () => {
+        const {
+            catalogueId,
+            collectionId,
+            ...lockedItem
+        } = entries[0]
+        return lockedItem
+    }
+    //
+    return getLockedRecord()
 }
 
 const updateRecord = async (
@@ -89,14 +127,18 @@ const updateRecord = async (
     //
     const { connection, database } = await connect(options)
     //
-    const identifier = lockedRecord.identifier
-    const newProperties = lockedRecord.properties
+    const { identifier, properties } = lockedRecord
+    //
+    const query = {
+        actionlogId,
+        identifier
+    }
     //
     await updateInCollection(
         database,
-        getRecordCollectionName(actionlogId),
-        { identifier },
-        { properties: newProperties }
+        COLLECTION_NAMES.RECORD,
+        query,
+        { properties }
     )
     //
     connection.close()
@@ -105,15 +147,22 @@ const updateRecord = async (
 const deleteRecord = async (
     options,
     actionlogId,
-    identifier
+    recordId
 ) => {
     //
     const { connection, database } = await connect(options)
     //
+    const identifier = recordId
+    //
+    const query = {
+        actionlogId,
+        identifier
+    }
+    //
     await deleteFromCollection(
         database,
-        getRecordCollectionName(actionlogId),
-        { identifier }
+        COLLECTION_NAMES.RECORD,
+        query
     )
     //
     connection.close()
