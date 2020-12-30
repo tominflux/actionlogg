@@ -7,19 +7,23 @@ const { serveRecordApi } = require("./record")
 //
 
 const postActionlogg = async (req, res) => {
-    //
     await req.actionlogg.initialiseActionlogg()
-    //
     res.send()
 }
-
+const getActionlogg = async (req, res) => {
+    const initialised = await req.actionlogg.checkActionlogg()
+    res.json({ initialised })
+}
 const deleteActionlogg = async (req, res) => {
     await req.actionlogg.destroyActionlogg()
     res.send()
 }
 
+//
+
 const serveActionloggApi = (router) => {
     router.post("/actionlogg", postActionlogg)
+    router.get('/actionlogg', getActionlogg)
     router.delete("/actionlogg", deleteActionlogg)
 }
 

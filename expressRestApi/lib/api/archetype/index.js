@@ -1,6 +1,6 @@
 
 
-const postArchetype = async (req, res, next) => {
+const postArchetype = async (req, res) => {
     //
     const actionlogId = req.params.actId
     const archetypeId = req.params.arcId
@@ -16,7 +16,7 @@ const postArchetype = async (req, res, next) => {
     res.send()
 }
 
-const getArchetypes = async (req, res, next) => {
+const getArchetypes = async (req, res) => {
     //
     const actionlogId = req.params.actId
     //
@@ -25,26 +25,26 @@ const getArchetypes = async (req, res, next) => {
     res.json(archetypes)
 }
 
-const getArchetype = async (req, res, next) => {
+const getArchetype = async (req, res) => {
     //
     const actionlogId = req.params.actId
     const archetypeId = req.params.arcId
     //
     const archetype = await req.actionlogg.readArchetype(
-        actionlogId, 
+        actionlogId,
         archetypeId
     )
     //
     res.json(archetype)
 }
 
-const deleteArchetype = async (req, res, next) => {
+const deleteArchetype = async (req, res) => {
     //
     const actionlogId = req.params.actId
     const archetypeId = req.params.arcId
     //
     await req.actionlogg.deleteArchetype(
-        actionlogId, 
+        actionlogId,
         archetypeId
     )
     //
