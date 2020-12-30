@@ -4,6 +4,27 @@ const { serveActionlogApi } = require("./actionlog")
 const { serveArchetypeApi } = require("./archetype")
 const { serveRecordApi } = require("./record")
 
+//
+
+const postActionlogg = async (req, res) => {
+    //
+    await req.actionlogg.initialiseActionlogg()
+    //
+    res.send()
+}
+
+const deleteActionlogg = async (req, res) => {
+    await req.actionlogg.destroyActionlogg()
+    res.send()
+}
+
+const serveActionloggApi = (router) => {
+    router.post("/actionlogg", postActionlogg)
+    router.delete("/actionlogg", deleteActionlogg)
+}
+
+//
+
 const genActionloggExpressRestApi = (actionloggApi) => {
     const router = express.Router()
     router.use(bodyParser.json())
@@ -13,6 +34,7 @@ const genActionloggExpressRestApi = (actionloggApi) => {
         next()
     })
     //
+    serveActionloggApi(router)
     serveActionlogApi(router)
     serveArchetypeApi(router)
     serveRecordApi(router)
